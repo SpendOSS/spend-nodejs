@@ -1,0 +1,25 @@
+{
+  "name": "spend-nodejs",
+  "version": "1.0.0",
+  "description": "Spend application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpendOSS/spend-nodejs.git"
+  },
+  "author": "Jagan Mohan Rao (dvsjmr9@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SpendOSS/spend-nodejs/issues"
+  },
+  "homepage": "https://github.com/SpendOSS/spend-nodejs#readme",
+  "dependencies": {
+    "express": "^4.18.3",
+    "firebase": "^10.8.1",
+    "firebase-admin": "^12.0.0"
+  }
+}
