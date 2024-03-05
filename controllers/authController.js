@@ -1,4 +1,5 @@
 const { db } = require("../database/admin");
+const { sendMail } = require("../helper/mail");
 const { encryptPWD } = require("../helper/passwordCheck");
 
 exports.signin = async (req, res) => {
@@ -28,6 +29,15 @@ exports.signup = async (req, res) => {
     const usersDb = db.collection("users");
     const response = await usersDb.doc().set(userJson);
     res.send(response);
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+exports.sendOTP = async (req, res) => {
+  try {
+    sendMail("dvsjmr9@gmail.com");
+    res.send("otp sent successfully");
   } catch (error) {
     res.send(error);
   }

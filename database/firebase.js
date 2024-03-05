@@ -1,13 +1,13 @@
 const firebase = require("firebase");
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCgXQXt-NmsihxfFrcoCsnLeDZpgs_Hyzs",
-  authDomain: "spendui.firebaseapp.com",
-  projectId: "spendui",
-  storageBucket: "spendui.appspot.com",
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
   messagingSenderId: "259240200432",
-  appId: "1:259240200432:web:29aaf8e9bccedd638f5a35",
-  measurementId: "G-5L9LHB0TKG"
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID
 };
 
 firebase.initializeApp(firebaseConfig); //initialize firebase app
