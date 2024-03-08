@@ -10,12 +10,12 @@ var transporter = nodemailer.createTransport({
   },
 });
 
-const sendMail = (toMail) => {
+const sendMail = (toMail, otp) => {
   let mailOptions = {
     from: process.env.MAIL_ID,
     to: toMail,
     subject: "SPEND OTP to Login",
-    text: `OTP is ${generateOTP}`,
+    text: `OTP is ${otp}`,
   }
 
   transporter.sendMail(mailOptions, function (error, info) {

@@ -4,6 +4,10 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRouter = require("./routes/authRoutes");
 const dotenv = require("dotenv");
+const morgan = require("morgan");
+const path = require("path");
+const fs = require("fs");
+
 dotenv.config();
 var app = express();
 
@@ -15,8 +19,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(express.json());
 app.use(cookieParser());
-const PORT = process.env.PORT;
+app.use(morgan("dev"));
 
+const date = new Date()
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(
+  path.join(__dirname, `/logs/access-${date.getDate()}-${date.getDay()}-${date.getFullYear()}.log`),
+  { flags: "a" }
+);
+
+const PORT = process.env.PORT;
+app.use(morgan("combined", { stream: accessLogStream }));
 app.get("/", (req, res) => {
   res.send("This is my demo project");
 });
