@@ -23,13 +23,13 @@ app.use(morgan("dev"));
 
 const date = new Date()
 // create a write stream (in append mode)
-var accessLogStream = fs.createWriteStream(
-  path.join(__dirname, `/logs/access.log`),
-  { flags: "a" }
-);
+// var accessLogStream = fs.createWriteStream(
+//   path.join(__dirname, `/logs/access.log`),
+//   { flags: "a" }
+// );
 
 const PORT = process.env.PORT;
-app.use(morgan("combined", { stream: accessLogStream }));
+// app.use(morgan("combined", { stream: accessLogStream }));
 app.get("/", (req, res) => {
   res.send("This is my demo project");
 });
