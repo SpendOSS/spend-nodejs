@@ -1,55 +1,72 @@
 const { db } = require("../database/admin");
 const { sendMail } = require("../helper/mail");
 const { generateOTP } = require("../helper/otpGenerator");
-const { encryptPWD } = require("../helper/passwordCheck");
 
 const usersRef = db.collection("users");
 
 exports.signin = async (req, res) => {
-  let { email } = req.body.email;
+  let { email } = req.body;
   try {
     usersRef
       .where("email", "==", email)
       .get()
       .then((snapshot) => {
         if (snapshot.empty) {
-          return res.send("User not exists");
+          return res.status(200).json({
+            isUserAvailable: false,
+            isOtpSent: false,
+            message: "Email is not registered",
+          });
         } else {
           let otp = generateOTP;
           sendMail(email, otp);
           usersRef.doc(snapshot.docs[0].id).update({ otp });
-          res.send("otp send successfully");
+          res.status(200).json({
+            isUserAvailable: true,
+            isOtpSent: true,
+            message: "OTP Sent to registered mail Id",
+          });
         }
       });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ general: "Something went wrong, please try again" });
+    return res.status(500).json({
+      message: "Something went wrong, please try again",
+      error: error,
+    });
   }
 };
 
 exports.signup = async (req, res) => {
+  let { email, mobileNumber } = req.body;
   try {
     usersRef
-      .where("email", "==", req.body.email)
+      .where("email", "==", email)
       .get()
       .then((snapshot) => {
         if (snapshot.empty) {
           let otp = generateOTP;
           const userJson = {
-            email: req.body.email,
-            mobileNumber: req.body.mobileNumber,
+            email: email,
+            mobileNumber: mobileNumber,
             otp,
           };
-          sendMail(req.body.email, otp);
+          sendMail(email, otp);
           usersRef
             .doc()
             .set(userJson)
             .then(() => {
-              return res.send("Otp sent successfully");
+              return res.status(200).json({
+                isUserAvailable: false,
+                isOtpSent: true,
+                message: "OTP Sent to mail Id",
+              });
             });
         } else {
-          return res.send("User already exists");
+          return res.status(200).json({
+            isUserAvailable: true,
+            isOtpSent: false,
+            message: "User is already registered",
+          });
         }
       });
   } catch (error) {
@@ -59,12 +76,20 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.sendOTP = async (req, res) => {
+exports.resendOTP = async (req, res) => {
+  let { email } = req.body;
   try {
-    sendMail("dvsjmr9@gmail.com");
-    res.send("otp sent successfully");
+    let otp = generateOTP;
+    sendMail(email, otp);
+    usersRef.doc(snapshot.docs[0].id).update({ otp });
+    return res.status(200).json({
+      isOtpSent: true,
+      message: "OTP Sent to mail Id",
+    });
   } catch (error) {
-    res.send(error);
+    return res
+      .status(500)
+      .json({ general: "Something went wrong, please try again" });
   }
 };
 
@@ -76,32 +101,18 @@ exports.verifyOTP = async (req, res) => {
       .then((snapshot) => {
         let user = snapshot.docs[0].data();
         if (user.otp === req.body.otp) {
-          return res.send("otp verified successfully");
+          return res.status(200).json({
+            isOtpValid: true,
+            message: "otp verified successfully",
+          });
         } else {
-          return res.send("otp is wrong");
+          return res.status(200).json({
+            isOtpValid: false,
+            message: "otp is invalid",
+          });
         }
       });
   } catch (error) {
     res.send(error);
   }
 };
-
-exports.createUser = (req, res) =>{
-  try{
-    usersRef
-      .where("email", "==", email)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.empty) {
-          return res.send("User not exists");
-        } else {
-          let otp = generateOTP;
-          sendMail(email, otp);
-          usersRef.doc(snapshot.docs[0].id).update({ otp });
-          res.send("otp send successfully");
-        }
-      });
-  } catch(error){
-    return res.send(error)
-  }
-}

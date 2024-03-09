@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const path = require("path");
 const fs = require("fs");
+const userRouter = require("./routes/userRoutes");
 
 dotenv.config();
 var app = express();
@@ -34,6 +35,8 @@ app.get("/", (req, res) => {
   res.send("This is my demo project");
 });
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+
 
 const server = app.listen(PORT, function () {
   console.log(`Demo project at: ${PORT}!`);

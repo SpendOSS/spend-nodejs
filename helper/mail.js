@@ -1,4 +1,4 @@
-require('dotenv').config(); 
+require("dotenv").config();
 var nodemailer = require("nodemailer");
 const { generateOTP } = require("./otpGenerator");
 
@@ -14,9 +14,9 @@ const sendMail = (toMail, otp) => {
   let mailOptions = {
     from: process.env.MAIL_ID,
     to: toMail,
-    subject: "SPEND OTP to Login",
-    text: `OTP is ${otp}`,
-  }
+    subject: "SPEND OTP to Login/SignUp",
+    html: `<html> <h1>Hi,</h1> <br/><p style="color:grey; font-size:1.2em">Please use the below OTP code to complete your account setup on Spend</p><br><br><h1 style="color:#2A880A">${otp}</h1></html>`,
+  };
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -27,4 +27,4 @@ const sendMail = (toMail, otp) => {
   });
 };
 
-module.exports ={sendMail}
+module.exports = { sendMail };
