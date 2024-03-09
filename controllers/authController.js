@@ -19,7 +19,7 @@ exports.signin = async (req, res) => {
           });
         } else {
           let otp = generateOTP;
-          sendMail(email, otp);
+          sendMail(email, otp, "Sigin");
           usersRef.doc(snapshot.docs[0].id).update({ otp });
           res.status(200).json({
             isUserAvailable: true,
@@ -50,7 +50,7 @@ exports.signup = async (req, res) => {
             mobileNumber: mobileNumber,
             otp,
           };
-          sendMail(email, otp);
+          sendMail(email, otp, "Registration with Spend.");
           usersRef
             .doc()
             .set(userJson)
@@ -79,13 +79,18 @@ exports.signup = async (req, res) => {
 exports.resendOTP = async (req, res) => {
   let { email } = req.body;
   try {
-    let otp = generateOTP;
-    sendMail(email, otp);
-    usersRef.doc(snapshot.docs[0].id).update({ otp });
-    return res.status(200).json({
-      isOtpSent: true,
-      message: "OTP Sent to mail Id",
-    });
+    usersRef
+      .where("email", "==", email)
+      .get()
+      .then((snapshot) => {
+        let otp = generateOTP;
+        sendMail(email, otp, "Login/Signup");
+        usersRef.doc(snapshot.docs[0].id).update({ otp });
+        return res.status(200).json({
+          isOtpSent: true,
+          message: "OTP Sent to mail Id",
+        });
+      });
   } catch (error) {
     return res
       .status(500)
