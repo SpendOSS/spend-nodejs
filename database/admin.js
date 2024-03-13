@@ -1,6 +1,11 @@
 let admin = require("firebase-admin");
-let serviceAccount = require("/etc/secrets/adminsdk.json");
-// let serviceAccount = require("./adminsdk.json");
+require("dotenv").config();
+let serviceAccount;
+if(process.env.ENVIRONMENT === 'development'){
+  serviceAccount = require("./adminsdk.json");
+} else {
+  serviceAccount = require("/etc/secrets/adminsdk.json");
+}
 
 
 admin.initializeApp({

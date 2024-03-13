@@ -36,7 +36,7 @@ exports.signin = async (req, res) => {
   }
 };
 
-exports.signup = async (req, res) => {
+exports.signup = (req, res) => {
   let { email, mobileNumber } = req.body;
   try {
     usersRef
@@ -49,6 +49,7 @@ exports.signup = async (req, res) => {
             email: email,
             mobileNumber: mobileNumber,
             otp,
+            isUserVerified: false,
           };
           sendMail(email, otp, "Registration with Spend.");
           usersRef
@@ -62,9 +63,19 @@ exports.signup = async (req, res) => {
               });
             });
         } else {
+          let data = snapshot.docs[0].data();
+          if (!data.isUserVerified) {
+            return res.status(200).json({
+              isUserAvailable: true,
+              isUserVerified: false,
+              isOtpSent: false,
+              message: "User is Not Verified",
+            });
+          }
           return res.status(200).json({
             isUserAvailable: true,
             isOtpSent: false,
+            isUserVerified: false,
             message: "User is already registered",
           });
         }
